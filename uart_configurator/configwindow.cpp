@@ -83,9 +83,9 @@ bool ConfigWindow::getValues()
 {
     if( ui->dbit_ledit->text().isEmpty()
         ||   ui->sb_tick_ledit->text().isEmpty()
-        ||   ui->dvsr_ledit->text().isEmpty()
         ||   ui->dvsr_bit_ledit->text().isEmpty()
-        ||   ui->fifo_w_ledit->text().isEmpty() )
+        ||   ui->fifo_w_ledit->text().isEmpty()
+        ||   ui->b_rate_combo->currentText().isEmpty())
     {
         return false;
     }
@@ -113,7 +113,7 @@ void ConfigWindow::restoreValues()
 {
     ui->dbit_ledit->setText("8");
     ui->sb_tick_ledit->setText("16");
-    ui->dvsr_ledit->setText("19200");
+    ui->b_rate_combo->setCurrentIndex(3);
     ui->dvsr_bit_ledit->setText("8");
     ui->clk_ledit->setText("50000000");
     ui->fifo_w_ledit->setText("2");
@@ -121,7 +121,7 @@ void ConfigWindow::restoreValues()
 
 void ConfigWindow::calculateBaudRateDivisor()
 {
-    std::string baudRate =  ui->dvsr_ledit->text().toStdString();
+    std::string baudRate =  ui->b_rate_combo->currentText().toStdString();
     std::string clkHz =  ui->clk_ledit->text().toStdString();
     int iBaudRate = std::atoi( baudRate.c_str() );
     int iClk = std::atoi( clkHz.c_str() );
@@ -135,11 +135,10 @@ void ConfigWindow::initialize()
     ui->error_lbl->setVisible(false);
     ui->succ_lbl->setVisible(false);
 
-    ui->dbit_ledit->setValidator( new QIntValidator(0, 100, this) );
-    ui->sb_tick_ledit->setValidator( new QIntValidator(0, 100, this) );
-    ui->dvsr_ledit->setValidator( new QIntValidator(0, 100, this) );
-    ui->dvsr_bit_ledit->setValidator( new QIntValidator(0, 100, this) );
-    ui->fifo_w_ledit->setValidator( new QIntValidator(0, 100, this) );
+    ui->dbit_ledit->setValidator( new QIntValidator(0, 1000000000, this) );
+    ui->sb_tick_ledit->setValidator( new QIntValidator(0, 1000000000, this) );
+    ui->dvsr_bit_ledit->setValidator( new QIntValidator(0, 1000000000, this) );
+    ui->fifo_w_ledit->setValidator( new QIntValidator(0, 1000000000, this) );
 
     connect(ui->export_btn, SIGNAL(pressed()), this, SLOT(exportUART()));
     connect(ui->restore_btn, SIGNAL(pressed()), this, SLOT(restoreValues()));
